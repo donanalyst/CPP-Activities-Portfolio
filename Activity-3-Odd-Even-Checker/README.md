@@ -16,4 +16,4 @@ Even
 
 ## Screenshot
 
-![Output](../images/activity3.png)
+![Output](../images/Activity-3.png)
