@@ -2,7 +2,11 @@
 
 ## Description
 
+<<<<<<< HEAD
 This is my first program, which will output "Hello world".
+=======
+This is my first program, which will output hello world
+>>>>>>> 83338198e94149c949ac14dec68182a33159bcc3
 
 ## Concepts Used
 
