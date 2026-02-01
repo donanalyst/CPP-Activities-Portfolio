@@ -2,7 +2,7 @@
 
 ## Description
 
-This program will check who is the largest number among the three inputs.
+This program will check which is the largest number among the three inputs.
 
 ## Concepts Used
 
