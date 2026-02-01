@@ -1,15 +1,15 @@
-- Print 1 to N
+* Print 1 to N
 
-\*\* Description
+** Description
 
 This program will print the input number from 1 to N.
 
-\*\* Concepts Used
+** Concepts Used
 
 - For loop
 - cin, cout
 
-\*\* Sample Output
+** Sample Output
 
 Enter a number (N): 7
 
@@ -17,6 +17,6 @@ Enter a number (N): 7
 
 1 2 3 4 5 6 7
 
-\*\* Screenshot
+** Screenshot
 
-![Activity-5-Print-1-to-N](./images/Activity-5-Print-1-to-N.png)
+![Output](./images/Activity-5.png)
