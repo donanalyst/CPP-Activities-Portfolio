@@ -2,7 +2,7 @@
 
 ## Description
 
-This is my first program which will output the print hello world
+This is my first program, which will output hello world
 
 ## Concepts Used
 
