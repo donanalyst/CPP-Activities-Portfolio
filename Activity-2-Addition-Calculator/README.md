@@ -2,7 +2,7 @@
 
 ## Description
 
-This is a simple calculator program that will add two number inputs.
+This is a simple calculator program that will add two numbers.
 
 ## Concepts Used
 
@@ -13,6 +13,7 @@ This is a simple calculator program that will add two number inputs.
 ## Sample Output
 
 Enter the first number: 4
+
 Enter the second number: 14
 
 Sum of the two number is: 18
