@@ -12,7 +12,7 @@ int main() {
     cout << space << "||" << space << " WELCOME TO NUMBER COMPARATOR! " << space << "||" << "\n";
     cout << space << "=========================================" << space << "\n\n\n";
 
-    cout << "Enter three numbers (seperated by spaces): ";
+    cout << "Enter three numbers (separated by spaces): ";
     cin >> num1 >> num2 >> num3;
 
     cout << "\n\n";
