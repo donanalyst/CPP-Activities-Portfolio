@@ -19,4 +19,4 @@ Enter a number (N): 7
 
 ## Screenshot
 
-![Output](./images/Activity-5.png)
+![Output](../images/Activity-5.png)
