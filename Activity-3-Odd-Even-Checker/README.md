@@ -18,7 +18,8 @@ This program checks whether a number is odd or even.
 ## Sample Output
 
 Enter number: 4
-Even
+
+Number 4 is Even
 
 ## Screenshot
 
