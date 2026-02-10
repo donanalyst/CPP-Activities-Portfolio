@@ -1,3 +1,18 @@
+// This is version 3.0 of this program
+// Progress made on this version:
+
+// Features:
+// 1. Added functions to add student to the archive list, delete student from the main list, and add deleted student to the archive list
+// 2. Added functions to backup student data and maintain the chronological order of the student id number in the backup file
+
+
+// Challenges: 
+// 1. The program is still not fully functional, and there are still some bugs that need to be fixed. 
+// 2. The program is able to save student data to the backup file, but it is not able to load student data from the backup file.
+// 3. The program is overriding the student data when loading from the backup file.
+
+
+
 #include "studentList.h"
 #include "utils.h"
 #include <string>
@@ -7,6 +22,7 @@
 #include <fstream>
 #include <limits>
 #include <iomanip>
+#include <ctime>
 
 using namespace std;
 
@@ -34,6 +50,135 @@ int StudentList::extractIDNumber(const string& fullID)
     return 0;
 
 }
+
+
+
+
+void StudentList::updateNextID() 
+{
+    int maxID = 0;
+
+    for (const auto& s : students) {
+        int idNum = extractIDNumber(s.id);
+        if (idNum > maxID) maxID = idNum;
+
+    }
+    nextID = maxID + 1;
+
+
+}
+
+
+
+
+void StudentList::addStudent(
+    string fn,
+    string ln,
+    int scr,
+    int attmpt,
+    int r,
+    int d,
+    int crdts
+)
+{
+    // Ensure proper name formatting
+    fn = toTitleCase(trim(fn));
+    ln = toTitleCase(trim(ln));
+
+    // Generate ID
+    ostringstream oss;
+    oss << "2026" << setw(2) << setfill('0') << nextID;
+    string studentID = oss.str();
+
+    // Add student (MATCHES Student constructor order)
+    students.emplace_back(studentID, fn, ln, scr, attmpt, r, d, crdts);
+
+
+    tempStudentID = studentID;
+
+    
+    
+    nextID++;
+}
+
+void StudentList::addDeletedStudent(string studentID, string date)
+{
+    for (auto& s : students)
+    {
+        if (s.id == studentID)
+        {
+            s.dateDeleted = date;
+            s.status = "Deleted";
+            updateBackup("../data/backupData.csv");
+            return;
+        }
+    }
+}
+
+
+void StudentList::updateBackup(const string& filename) 
+{
+    ofstream file(filename);
+    if (!file.is_open()) 
+    {
+        cout << "\n\n[WARNING]: Failed to open file." << endl;
+        return;
+    };
+
+    file << "ID,DateCreated,DateDeleted,Status\n";
+
+    for (auto& student : students) 
+    {
+        file << student.id << ",";
+        file << student.dateCreated << ",";
+        file << student.dateDeleted << ",";
+        file << student.status << "\n";
+        
+    }
+
+    file.close();
+    cout << "\n\nData was saved." << endl;
+}
+
+void StudentList::saveToBackUP(string date)
+{
+    bool writeHeader = false;
+    {
+        ifstream check("../data/backupData.csv");
+        writeHeader = check.peek() == ifstream::traits_type::eof();
+    }
+
+
+    ofstream file("../data/backupData.csv", ios::app);
+    if (!file)
+    {
+        cerr << "Error opening archive file!\n";
+        return;
+    }
+
+
+
+    // Write header ONLY ONCE
+    if (writeHeader)
+    {
+        file << "ID,DateCreated,DateDeleted,Status\n";
+    }
+
+    // Write student data
+    file << tempStudentID << ","
+         << date<< ","
+         << "" << ","
+         << "active" << "\n";
+
+
+
+    updateNextID();
+
+
+}
+
+
+// SAVED TO FILE SECTIONS   
 
 void StudentList::saveToArchive(const Student& s)
 {
@@ -68,47 +213,6 @@ void StudentList::saveToArchive(const Student& s)
          << "Deleted" << "\n";
 }
 
-
-void StudentList::updateNextID() 
-{
-    int maxID = 0;
-
-    for (const auto& s : students) {
-        int idNum = extractIDNumber(s.id);
-        if (idNum > maxID) maxID = idNum;
-
-    }
-    nextID = maxID + 1;
-
-
-}
-
-
-void StudentList::addStudent(
-    string fn,
-    string ln,
-    int scr,
-    int attmpt,
-    int r,
-    int d,
-    int crdts
-)
-{
-    // Ensure proper name formatting
-    fn = toTitleCase(trim(fn));
-    ln = toTitleCase(trim(ln));
-
-    // Generate ID
-    ostringstream oss;
-    oss << "2026" << setw(2) << setfill('0') << nextID;
-    string studentID = oss.str();
-
-    // Add student (MATCHES Student constructor order)
-    students.emplace_back(studentID, fn, ln, scr, attmpt, r, d, crdts);
-
-    nextID++;
-}
-
 void StudentList::saveToFile(const string& filename) 
 {
     ofstream file(filename);
@@ -130,6 +234,7 @@ void StudentList::saveToFile(const string& filename)
         file << student.rank << ",";
         file << student.date << ",";
         file << student.credits << "\n";
+        
     }
 
     file.close();
@@ -137,6 +242,8 @@ void StudentList::saveToFile(const string& filename)
 }
 
 
+
+// PRINTING DATA TO THE CONSOLE
 
 
 void StudentList::printList()
@@ -161,6 +268,40 @@ void StudentList::printList()
     }
 }
 
+
+void StudentList::printCurrentStudent(string userInput)
+{
+    bool found = false;
+
+    for (const auto& student : students)
+    {
+
+        string fullName = student.firstName + " " + student.lastName;
+        
+        if (userInput == student.id || toTitleCase(userInput) == fullName)
+        {
+            cout << "\n\nStudent Information Found!\n\n";
+            cout << "Name: " << student.firstName << " " << student.lastName << endl;
+            cout << "ID: " << student.id << endl;
+            cout << "Score: " << student.score << endl;
+            cout << "Attempts: " << student.attempts << endl;
+            cout << "Rank: " << student.rank << endl;
+            cout << "Date: " << student.date << endl;
+            cout << "Credits: " << student.credits << endl;
+            cout << "-----------------------" << endl;
+            found = true;
+            break;
+        }
+    }
+
+    if (!found)
+    {
+        cout << "\n[NOTE]: Student not found!\n";
+    }
+}
+
+
+// LOADING FROM FILE
 
 void StudentList::loadFromFile(const string& filename) 
 {
@@ -248,36 +389,6 @@ void StudentList::loadFromFile(const string& filename)
         
 }
 
-void StudentList::printCurrentStudent(string userInput)
-{
-    bool found = false;
-
-    for (const auto& student : students)
-    {
-
-        string fullName = student.firstName + " " + student.lastName;
-        
-        if (userInput == student.id || toTitleCase(userInput) == fullName)
-        {
-            cout << "\n\nStudent Information Found!\n\n";
-            cout << "Name: " << student.firstName << " " << student.lastName << endl;
-            cout << "ID: " << student.id << endl;
-            cout << "Score: " << student.score << endl;
-            cout << "Attempts: " << student.attempts << endl;
-            cout << "Rank: " << student.rank << endl;
-            cout << "Date: " << student.date << endl;
-            cout << "Credits: " << student.credits << endl;
-            cout << "-----------------------" << endl;
-            found = true;
-            break;
-        }
-    }
-
-    if (!found)
-    {
-        cout << "\n[NOTE]: Student not found!\n";
-    }
-}
 
 void StudentList::deleteProfile(string userInput, StudentList& archiveList)
 {
@@ -286,9 +397,10 @@ void StudentList::deleteProfile(string userInput, StudentList& archiveList)
 
     for (auto it = students.begin(); it != students.end(); )
     {
+        string input = toTitleCase(trim(userInput));
         string fullName = trim(it->firstName + " " + it->lastName);
 
-        if (it->id == userInput || fullName == toTitleCase(userInput))
+        if (it->id == input || fullName == toTitleCase(userInput))
         {
             cout << "\nStudent Information Verified!\n\n";
             cout << "Full Name: " << fullName << "\n";
@@ -298,20 +410,25 @@ void StudentList::deleteProfile(string userInput, StudentList& archiveList)
             cin >> confirm;
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
+            
+
             found = true;
 
             if (confirm == 'Y' || confirm == 'y')
             {
-                // ✅ SAVE FIRST BEFORE ERASE
-                saveToArchive(*it);
 
-                // ✅ REMOVE FROM ACTIVE LIST
+                string dateDeleted = getTodayDate();
+                addDeletedStudent(it->id, dateDeleted);
+
+                saveToArchive(*it);
+ 
                 it = students.erase(it);
 
-                // ✅ SAVE UPDATED ACTIVE LIST
-                saveToFile("studentInfo.csv");
+                saveToFile("../data/studentInfo.csv");
 
                 cout << "\nDeletion successful.\n";
+
+
             }
             else
             {

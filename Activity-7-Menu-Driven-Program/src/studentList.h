@@ -14,7 +14,9 @@ private :
     vector<Student> students;
 
 
+
     int nextID;
+    string tempStudentID;
 
     int extractIDNumber(const string& fullID);
 
@@ -24,16 +26,22 @@ private :
 public :
 
     StudentList();
-    void saveToArchive(const Student& s);
+
+    void loadFromFile(const string& filename);
+    
     void addStudent(string fn, string ln, int scr, int attmpts, int r, int d, int crdts);
 
-    void addArchive(string id, string fn, string ln, int scr, int attmpts, int r, int d, int crdts);
 
+    void updateBackup(const string& filename);
+    void saveToArchive(const Student& s);
+    void saveToBackUP(string date);
     void saveToFile(const string& filename);
     void printList();
-    void loadFromFile(const string& filename);
+    
     void printCurrentStudent(string userInput);
     void deleteProfile(string userInput, StudentList& archiveList);
+    void addDeletedStudent(string studentID, string date);
+    
     
 
 

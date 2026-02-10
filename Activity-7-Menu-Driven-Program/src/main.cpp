@@ -18,7 +18,7 @@ using namespace std;
 
 // Function prototypes (declared before main, defined after)
 void viewHighScore(StudentList& list);  // Display high scores
-void startQuiz(StudentList& list);      // Start quiz process
+void startQuiz(StudentList& list, StudentList& backupList);      // Start quiz process
 void viewMyProfile(StudentList& list);
 void deleteMyProfile(StudentList& list);
 
@@ -33,8 +33,8 @@ int main() {
 
     StudentList list;  // Create studentList object to manage students
 
-    StudentList archStudent;
-    
+    StudentList backupList;
+
     list.loadFromFile("../data/archiveInfo.csv");
     list.loadFromFile("../data/studentInfo.csv");
 
@@ -68,7 +68,7 @@ int main() {
         // Process user's choice using switch statement
         switch (choice) {
             case 1:  // Start quiz
-                startQuiz(list);
+                startQuiz(list, backupList);
                 list.saveToFile("../data/studentInfo.csv");
                 break;
             
@@ -124,7 +124,7 @@ int main() {
 }
 
 // Function to start the quiz process
-void startQuiz(StudentList& list) 
+void startQuiz(StudentList& list, StudentList& backupList) 
 {
 
     clearScreen();
@@ -153,8 +153,13 @@ void startQuiz(StudentList& list)
                    newStudent.score, newStudent.attempts, newStudent.rank, 
                    newStudent.date, newStudent.credits);
     
-    // Save updated list to file
-    
+    // Save updated list to file3
+
+    string currentDate = getTodayDate();
+
+    list.saveToBackUP(currentDate);
+
+
     return;
 }
 

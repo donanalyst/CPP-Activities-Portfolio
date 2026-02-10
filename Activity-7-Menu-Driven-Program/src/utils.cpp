@@ -1,8 +1,11 @@
 #include <string>
 #include <algorithm>
 #include <cctype>
+#include <ctime>
+#include <iostream>
 #include <cstdlib> // use for clear screen in the console 
 #include "utils.h"
+
 
 
 std::string trim(const std::string& str) 
@@ -53,3 +56,18 @@ void clearScreen()
 {
     system("cls");
 }
+
+std::string getTodayDate() 
+{
+    time_t now = time(0);
+    tm* localTime = localtime(&now);
+
+    char buffer[11];
+
+    strftime(buffer, sizeof(buffer), "%Y-%m-%d", localTime);
+
+    return std::string(buffer);
+}
+
+
+
